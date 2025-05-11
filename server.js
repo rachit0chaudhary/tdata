@@ -9,7 +9,6 @@ http: require("./mongoscoon.js");
 
 const Stock = require("./stocks.js");
 
-
 // Environment variables
 dotenv.config();
 
@@ -49,7 +48,7 @@ apiSocket.on("connect", () => {
 const handleLiveData = async (data) => {
   try {
     const { InstrumentIdentifier } = data;
-
+    console.log(data);
     // Search for the stock using InstrumentIdentifier
     const existingStock = await Stock.findOne({ InstrumentIdentifier });
 
@@ -60,17 +59,13 @@ const handleLiveData = async (data) => {
       console.log(`Added new stock: ${InstrumentIdentifier}`);
     } else {
       // Update existing stock with new data
-      await Stock.updateOne(
-        { InstrumentIdentifier },
-        { $set: data }
-      );
+      await Stock.updateOne({ InstrumentIdentifier }, { $set: data });
       // console.log(`Updated stock: ${InstrumentIdentifier}`);
     }
   } catch (error) {
     console.error("Error updating stocks:", error);
   }
 };
-
 
 // Start Express server
 app.listen(8080, () => {
